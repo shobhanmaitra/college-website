@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MUJ Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://via.placeholder.com/40" alt="MUJ Logo" />
+                <span>MUJ</span>
+            </div>
+            <ul class="menu">
+                <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Academics <span>&gt;</span></a>
+                    <ul class="submenu">
+                        <li><a href="#">1st Year</a></li>
+                        <li><a href="#">2nd Year</a></li>
+                        <li><a href="#">3rd Year</a></li>
+                        <li><a href="#">4th Year</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#">Finance <span>&gt;</span></a>
+                    <ul class="submenu">
+                        <li><a href="#">College Payment</a></li>
+                        <li><a href="#">Hostel Payment</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#">Examination <span>&gt;</span></a>
+                    <ul class="submenu">
+                        <li><a href="#">Schedule</a></li>
+                        <li><a href="#">Results</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#">Scholarship <span>&gt;</span></a>
+                    <ul class="submenu">
+                        <li><a href="#">Apply</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">Counselling</a></li>
+                <li><a href="#">E-Library</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Intra Bus Services <span>&gt;</span></a>
+                    <ul class="submenu">
+                        <li><a href="#">Timings</a></li>
+                        <li><a href="#">Bookings</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#">Inter Bus Services</a></li>
+                <li><a href="#">Teachers Timetable</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="breadcrumbs">Reports &gt; Student Self Service</div>
+                <div class="search-container">
+                    <input type="text" placeholder="Search" />
+                </div>
+                <div class="profile">
+                    <img src="https://via.placeholder.com/30" alt="Profile" />
+                    <div class="tooltip">View Profile</div>
+                </div>
+            </header>
+
+            <section class="content">
+                <div class="content-grid">
+                    <div class="card login-card">
+                        <h3>Student Login</h3>
+                        <form id="login-form">
+                            <label for="student-id">Student ID</label>
+                            <input type="text" id="student-id" placeholder="e.g. 23CS1001" required />
+
+                            <label for="student-pin">PIN / DOB</label>
+                            <input type="password" id="student-pin" placeholder="YYYYMMDD" required />
+
+                            <button type="submit">Access Dashboard</button>
+                            <p class="hint">Demo accounts are seeded below.</p>
+                        </form>
+                        <div id="login-feedback" class="feedback"></div>
+                    </div>
+
+                    <div class="card profile-card hidden" id="student-card">
+                        <div class="card-header">
+                            <div>
+                                <p class="muted">Welcome back</p>
+                                <h3 id="student-name">Student Name</h3>
+                            </div>
+                            <span class="status-pill" id="student-status">Active</span>
+                        </div>
+                        <ul class="profile-meta">
+                            <li><span>Program</span><strong id="student-program">B.Tech CSE</strong></li>
+                            <li><span>Semester</span><strong id="student-semester">3rd</strong></li>
+                            <li><span>Advisor</span><strong id="student-advisor">Dr. Rao</strong></li>
+                            <li><span>Email</span><strong id="student-email">student@muj.edu</strong></li>
+                        </ul>
+                        <div class="stat-row">
+                            <div>
+                                <p class="muted">CGPA</p>
+                                <strong id="student-cgpa">8.2</strong>
+                            </div>
+                            <div>
+                                <p class="muted">Overall Attendance</p>
+                                <strong id="student-overall">0%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card attendance-card hidden" id="attendance-card">
+                        <div class="card-header">
+                            <h3>Attendance Snapshot</h3>
+                            <span class="muted" id="attendance-updated">Updated just now</span>
+                        </div>
+                        <table id="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th>Course</th>
+                                    <th>Total</th>
+                                    <th>Present</th>
+                                    <th>%</th>
+                                    <th>Faculty</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card events-card">
+                        <div class="card-header">
+                            <h3>Upcoming Events</h3>
+                            <span class="muted">Campus wide</span>
+                        </div>
+                        <ul class="list" id="events-list"></ul>
+                    </div>
+
+                    <div class="card notice-card">
+                        <div class="card-header">
+                            <h3>Announcements</h3>
+                        </div>
+                        <ul class="list" id="notices-list"></ul>
+                    </div>
+
+                    <div class="card bus-card">
+                        <div class="card-header">
+                            <h3>Inter Bus Service</h3>
+                            <span class="muted">City ⇄ Campus</span>
+                        </div>
+
+                        <table id="bus-table">
+                            <thead>
+                                <tr>
+                                    <th>Route</th>
+                                    <th>Departure</th>
+                                    <th>Arrival</th>
+                                    <th>Fare</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bus-table-body"></tbody>
+                        </table>
+
+                        <div class="divider"></div>
+
+                        <form id="bus-booking-form" class="bus-form">
+                            <div class="two-col">
+                                <label>
+                                    Passenger Name
+                                    <input type="text" id="bus-name" placeholder="e.g. Rahul Sharma" required />
+                                </label>
+                                <label>
+                                    Select Route
+                                    <select id="bus-route" required></select>
+                                </label>
+                            </div>
+                            <div class="two-col">
+                                <label>
+                                    Travel Date
+                                    <input type="date" id="bus-date" required />
+                                </label>
+                                <label>
+                                    Preferred Slot
+                                    <select id="bus-slot" required></select>
+                                </label>
+                            </div>
+                            <button type="submit">Reserve Seat</button>
+                        </form>
+
+                        <div id="bus-feedback" class="feedback"></div>
+
+                        <div class="bus-bookings">
+                            <p class="muted">Recent Bookings (demo)</p>
+                            <ul class="list" id="bus-bookings"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-info">
+                    <h4>Demo Accounts</h4>
+                    <p>Use any of the following student IDs with DOB (YYYYMMDD) as the PIN:</p>
+                    <ul id="demo-accounts"></ul>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js" defer></script>
+</body>
+
+</html>
