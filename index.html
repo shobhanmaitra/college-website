@@ -7,6 +7,113 @@
     <title>MUJ Dashboard</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        /* ── Teachers Feature ── */
+        .teachers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .teacher-card {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+        }
+
+        .teacher-card:hover {
+            border-color: #f77d0e;
+            box-shadow: 0 4px 12px rgba(247, 125, 14, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .teacher-card .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #f77d0e;
+            color: white;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+        }
+
+        .teacher-card .name {
+            font-weight: 600;
+            color: #333;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .teacher-card .subject {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .teacher-card .view-btn {
+            margin-top: 12px;
+            display: inline-block;
+            padding: 6px 16px;
+            background-color: #f77d0e;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+
+        .coming-soon-box {
+            margin-top: 20px;
+            padding: 30px;
+            background: #fff8f0;
+            border: 2px dashed #f77d0e;
+            border-radius: 10px;
+            text-align: center;
+            color: #f77d0e;
+            font-size: 15px;
+        }
+
+        .coming-soon-box i {
+            font-size: 36px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color: #f77d0e;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Sections Table Rows ── */
+        tbody td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        tbody tr:hover {
+            background-color: #fff8f0;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -17,15 +124,15 @@
                 <span>MUJ</span>
             </div>
             <ul class="menu">
-                <li><a href="#"><i class="fa fa-home"></i> Home</a></li>
+                <li><a onclick="showHome()" style="cursor:pointer"><i class="fa fa-home"></i> Home</a></li>
 
                 <li class="dropdown">
                     <a href="#">Academics <span>&gt;</span></a>
                     <ul class="submenu">
-                        <li><a href="#">1st Year</a></li>
-                        <li><a href="#">2nd Year</a></li>
-                        <li><a href="#">3rd Year</a></li>
-                        <li><a href="#">4th Year</a></li>
+                        <li><a onclick="showSection('year1')" style="cursor:pointer">1st Year</a></li>
+                        <li><a onclick="showSection('year2')" style="cursor:pointer">2nd Year</a></li>
+                        <li><a onclick="showSection('year3')" style="cursor:pointer">3rd Year</a></li>
+                        <li><a onclick="showSection('year4')" style="cursor:pointer">4th Year</a></li>
                     </ul>
                 </li>
 
@@ -40,7 +147,7 @@
                 <li class="dropdown">
                     <a href="#">Examination <span>&gt;</span></a>
                     <ul class="submenu">
-                        <li><a href="#">Schedule</a></li>
+                        <li><a onclick="showSection('exam-schedule')" style="cursor:pointer">Schedule</a></li>
                         <li><a href="#">Results</a></li>
                     </ul>
                 </li>
@@ -59,19 +166,19 @@
                 <li class="dropdown">
                     <a href="#">Intra Bus Services <span>&gt;</span></a>
                     <ul class="submenu">
-                        <li><a href="#">Timings</a></li>
+                        <li><a onclick="showSection('intra-timings')" style="cursor:pointer">Timings</a></li>
                         <li><a href="#">Bookings</a></li>
                     </ul>
                 </li>
 
                 <li><a href="#">Inter Bus Services</a></li>
-                <li><a href="#">Teachers Timetable</a></li>
+                <li><a onclick="showTeachers()" style="cursor:pointer">Teachers Timetable</a></li>
             </ul>
         </aside>
 
         <main class="main-content">
             <header class="topbar">
-                <div class="breadcrumbs">Reports &gt; Student Self Service</div>
+                <div class="breadcrumbs" id="breadcrumb">Reports &gt; Student Self Service</div>
                 <div class="search-container">
                     <input type="text" placeholder="Search" />
                 </div>
@@ -82,144 +189,300 @@
             </header>
 
             <section class="content">
-                <div class="content-grid">
-                    <div class="card login-card">
-                        <h3>Student Login</h3>
-                        <form id="login-form">
-                            <label for="student-id">Student ID</label>
-                            <input type="text" id="student-id" placeholder="e.g. 23CS1001" required />
 
-                            <label for="student-pin">PIN / DOB</label>
-                            <input type="password" id="student-pin" placeholder="YYYYMMDD" required />
+                <!-- ══ HOME VIEW (original layout) ══ -->
+                <div id="home-view">
+                    <div class="content-grid">
 
-                            <button type="submit">Access Dashboard</button>
-                            <p class="hint">Demo accounts are seeded below.</p>
-                        </form>
-                        <div id="login-feedback" class="feedback"></div>
+                        <!-- Student Login -->
+                        <div class="card login-card">
+                            <h3>Student Login</h3>
+                            <form id="login-form">
+                                <label for="student-id">Student ID</label>
+                                <input type="text" id="student-id" placeholder="e.g. 23CS1001" required />
+                                <label for="student-pin">PIN / DOB</label>
+                                <input type="password" id="student-pin" placeholder="YYYYMMDD" required />
+                                <button type="submit">Access Dashboard</button>
+                                <p class="hint">Demo accounts are seeded below.</p>
+                            </form>
+                            <div id="login-feedback" class="feedback"></div>
+                        </div>
+
+                        <!-- Student Profile (shown after login) -->
+                        <div class="card profile-card hidden" id="student-card">
+                            <div class="card-header">
+                                <div>
+                                    <p class="muted">Welcome back</p>
+                                    <h3 id="student-name">Student Name</h3>
+                                </div>
+                                <span class="status-pill" id="student-status">Active</span>
+                            </div>
+                            <ul class="profile-meta">
+                                <li><span>Program</span><strong id="student-program">B.Tech CSE</strong></li>
+                                <li><span>Semester</span><strong id="student-semester">3rd</strong></li>
+                                <li><span>Advisor</span><strong id="student-advisor">Dr. Rao</strong></li>
+                                <li><span>Email</span><strong id="student-email">student@muj.edu</strong></li>
+                            </ul>
+                            <div class="stat-row">
+                                <div>
+                                    <p class="muted">CGPA</p>
+                                    <strong id="student-cgpa">8.2</strong>
+                                </div>
+                                <div>
+                                    <p class="muted">Overall Attendance</p>
+                                    <strong id="student-overall">0%</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attendance -->
+                        <div class="card attendance-card hidden" id="attendance-card">
+                            <div class="card-header">
+                                <h3>Attendance Snapshot</h3>
+                                <span class="muted" id="attendance-updated">Updated just now</span>
+                            </div>
+                            <table id="attendance-table">
+                                <thead>
+                                    <tr>
+                                        <th>Course</th>
+                                        <th>Total</th>
+                                        <th>Present</th>
+                                        <th>%</th>
+                                        <th>Faculty</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+
+                        <!-- Upcoming Events -->
+                        <div class="card events-card">
+                            <div class="card-header">
+                                <h3>Upcoming Events</h3>
+                                <span class="muted">Campus wide</span>
+                            </div>
+                            <ul class="list" id="events-list"></ul>
+                        </div>
+
+                        <!-- Announcements -->
+                        <div class="card notice-card">
+                            <div class="card-header">
+                                <h3>Announcements</h3>
+                            </div>
+                            <ul class="list" id="notices-list"></ul>
+                        </div>
+
+                        <!-- Bus Reservation -->
+                        <div class="card bus-card">
+                            <div class="card-header">
+                                <h3>Inter Bus Service</h3>
+                                <span class="muted">City ⇄ Campus</span>
+                            </div>
+                            <table id="bus-table">
+                                <thead>
+                                    <tr>
+                                        <th>Route</th>
+                                        <th>Departure</th>
+                                        <th>Arrival</th>
+                                        <th>Fare</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bus-table-body"></tbody>
+                            </table>
+                            <div class="divider"></div>
+                            <form id="bus-booking-form" class="bus-form">
+                                <div class="two-col">
+                                    <label>
+                                        Passenger Name
+                                        <input type="text" id="bus-name" placeholder="e.g. Rahul Sharma" required />
+                                    </label>
+                                    <label>
+                                        Select Route
+                                        <select id="bus-route" required></select>
+                                    </label>
+                                </div>
+                                <div class="two-col">
+                                    <label>
+                                        Travel Date
+                                        <input type="date" id="bus-date" required />
+                                    </label>
+                                    <label>
+                                        Preferred Slot
+                                        <select id="bus-slot" required></select>
+                                    </label>
+                                </div>
+                                <button type="submit">Reserve Seat</button>
+                            </form>
+                            <div id="bus-feedback" class="feedback"></div>
+                            <div class="bus-bookings">
+                                <p class="muted">Recent Bookings (demo)</p>
+                                <ul class="list" id="bus-bookings"></ul>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="card profile-card hidden" id="student-card">
-                        <div class="card-header">
-                            <div>
-                                <p class="muted">Welcome back</p>
-                                <h3 id="student-name">Student Name</h3>
-                            </div>
-                            <span class="status-pill" id="student-status">Active</span>
-                        </div>
-                        <ul class="profile-meta">
-                            <li><span>Program</span><strong id="student-program">B.Tech CSE</strong></li>
-                            <li><span>Semester</span><strong id="student-semester">3rd</strong></li>
-                            <li><span>Advisor</span><strong id="student-advisor">Dr. Rao</strong></li>
-                            <li><span>Email</span><strong id="student-email">student@muj.edu</strong></li>
-                        </ul>
-                        <div class="stat-row">
-                            <div>
-                                <p class="muted">CGPA</p>
-                                <strong id="student-cgpa">8.2</strong>
-                            </div>
-                            <div>
-                                <p class="muted">Overall Attendance</p>
-                                <strong id="student-overall">0%</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card attendance-card hidden" id="attendance-card">
-                        <div class="card-header">
-                            <h3>Attendance Snapshot</h3>
-                            <span class="muted" id="attendance-updated">Updated just now</span>
-                        </div>
-                        <table id="attendance-table">
-                            <thead>
-                                <tr>
-                                    <th>Course</th>
-                                    <th>Total</th>
-                                    <th>Present</th>
-                                    <th>%</th>
-                                    <th>Faculty</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="card events-card">
-                        <div class="card-header">
-                            <h3>Upcoming Events</h3>
-                            <span class="muted">Campus wide</span>
-                        </div>
-                        <ul class="list" id="events-list"></ul>
-                    </div>
-
-                    <div class="card notice-card">
-                        <div class="card-header">
-                            <h3>Announcements</h3>
-                        </div>
-                        <ul class="list" id="notices-list"></ul>
-                    </div>
-
-                    <div class="card bus-card">
-                        <div class="card-header">
-                            <h3>Inter Bus Service</h3>
-                            <span class="muted">City ⇄ Campus</span>
-                        </div>
-
-                        <table id="bus-table">
-                            <thead>
-                                <tr>
-                                    <th>Route</th>
-                                    <th>Departure</th>
-                                    <th>Arrival</th>
-                                    <th>Fare</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bus-table-body"></tbody>
-                        </table>
-
-                        <div class="divider"></div>
-
-                        <form id="bus-booking-form" class="bus-form">
-                            <div class="two-col">
-                                <label>
-                                    Passenger Name
-                                    <input type="text" id="bus-name" placeholder="e.g. Rahul Sharma" required />
-                                </label>
-                                <label>
-                                    Select Route
-                                    <select id="bus-route" required></select>
-                                </label>
-                            </div>
-                            <div class="two-col">
-                                <label>
-                                    Travel Date
-                                    <input type="date" id="bus-date" required />
-                                </label>
-                                <label>
-                                    Preferred Slot
-                                    <select id="bus-slot" required></select>
-                                </label>
-                            </div>
-                            <button type="submit">Reserve Seat</button>
-                        </form>
-
-                        <div id="bus-feedback" class="feedback"></div>
-
-                        <div class="bus-bookings">
-                            <p class="muted">Recent Bookings (demo)</p>
-                            <ul class="list" id="bus-bookings"></ul>
-                        </div>
+                    <!-- Demo Info -->
+                    <div class="demo-info">
+                        <h4>Demo Accounts</h4>
+                        <p>Use any of the following student IDs with DOB (YYYYMMDD) as the PIN:</p>
+                        <ul id="demo-accounts"></ul>
                     </div>
                 </div>
 
-                <div class="demo-info">
-                    <h4>Demo Accounts</h4>
-                    <p>Use any of the following student IDs with DOB (YYYYMMDD) as the PIN:</p>
-                    <ul id="demo-accounts"></ul>
+                <!-- ══ OTHER SECTIONS VIEW ══ -->
+                <div id="section-view" style="display:none;">
+                    <h3 id="sectionTitle"></h3>
+                    <div id="contentArea"></div>
                 </div>
+
             </section>
         </main>
     </div>
+
+    <script>
+        // ── Static Data ───────────────────────────────────────────────
+        const courseData = {
+            year1: [
+                { code: 'CS101', name: 'Introduction to Programming', credits: 4, faculty: 'Dr. Amit Sharma' },
+                { code: 'MA101', name: 'Engineering Mathematics I', credits: 4, faculty: 'Dr. Priya Singh' },
+                { code: 'PH101', name: 'Physics for Engineers', credits: 3, faculty: 'Dr. Rakesh Kumar' },
+                { code: 'EN101', name: 'English Communication', credits: 2, faculty: 'Prof. Neha Gupta' }
+            ],
+            year2: [
+                { code: 'CS201', name: 'Data Structures and Algorithms', credits: 4, faculty: 'Dr. Suresh Patel' },
+                { code: 'CS202', name: 'Database Management Systems', credits: 4, faculty: 'Dr. Meera Joshi' },
+                { code: 'CS203', name: 'Operating Systems', credits: 4, faculty: 'Dr. Vijay Kumar' }
+            ],
+            year3: [
+                { code: 'CS301', name: 'Web Technologies', credits: 3, faculty: 'Prof. Anjali Verma' },
+                { code: 'CS302', name: 'Machine Learning', credits: 4, faculty: 'Dr. Rahul Mehta' },
+                { code: 'CS303', name: 'Computer Networks', credits: 4, faculty: 'Dr. Sandeep Reddy' }
+            ],
+            year4: [
+                { code: 'CS401', name: 'Cloud Computing', credits: 3, faculty: 'Dr. Kavita Nair' },
+                { code: 'CS402', name: 'Artificial Intelligence', credits: 4, faculty: 'Dr. Arjun Desai' },
+                { code: 'CS403', name: 'Project Work', credits: 6, faculty: 'Multiple Guides' }
+            ],
+            examSchedule: [
+                { code: 'CS101', name: 'Introduction to Programming', date: '05-12-2024', time: '09:00 AM', room: 'A-101' },
+                { code: 'MA101', name: 'Engineering Mathematics I', date: '07-12-2024', time: '09:00 AM', room: 'A-102' },
+                { code: 'CS201', name: 'Data Structures and Algorithms', date: '08-12-2024', time: '02:00 PM', room: 'B-201' },
+                { code: 'CS301', name: 'Web Technologies', date: '10-12-2024', time: '09:00 AM', room: 'C-301' },
+                { code: 'CS401', name: 'Cloud Computing', date: '12-12-2024', time: '02:00 PM', room: 'D-401' }
+            ],
+            intraBus: [
+                { route: 'Campus Loop 1', bus: 'MUJ-101', departure: '08:00 AM', arrival: '08:30 AM', seats: 40 },
+                { route: 'Campus Loop 2', bus: 'MUJ-102', departure: '09:00 AM', arrival: '09:30 AM', seats: 35 },
+                { route: 'Evening Shuttle', bus: 'MUJ-103', departure: '05:00 PM', arrival: '05:30 PM', seats: 40 }
+            ]
+        };
+
+        const teachers = [
+            { name: 'Dr. Amit Sharma', subject: 'Data Structures' },
+            { name: 'Dr. Priya Singh', subject: 'Mathematics' },
+            { name: 'Dr. Rakesh Kumar', subject: 'Physics' },
+            { name: 'Prof. Neha Gupta', subject: 'English' },
+            { name: 'Dr. Suresh Patel', subject: 'Algorithms' }
+        ];
+
+        // ── View Switchers ────────────────────────────────────────────
+        function showHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('section-view').style.display = 'none';
+            document.getElementById('breadcrumb').textContent = 'Reports > Student Self Service';
+        }
+
+        function showSectionView(title, breadcrumb, html) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('section-view').style.display = 'block';
+            document.getElementById('sectionTitle').textContent = title;
+            document.getElementById('breadcrumb').textContent = breadcrumb;
+            document.getElementById('contentArea').innerHTML = html;
+        }
+
+        // ── Section Router ────────────────────────────────────────────
+        function showSection(section) {
+            switch (section) {
+                case 'year1': renderCourses('year1', '1st Year Courses', 'Academics > 1st Year'); break;
+                case 'year2': renderCourses('year2', '2nd Year Courses', 'Academics > 2nd Year'); break;
+                case 'year3': renderCourses('year3', '3rd Year Courses', 'Academics > 3rd Year'); break;
+                case 'year4': renderCourses('year4', '4th Year Courses', 'Academics > 4th Year'); break;
+                case 'exam-schedule': renderExamSchedule(); break;
+                case 'intra-timings': renderIntraBus(); break;
+                default:
+                    showSectionView('Coming Soon', 'Dashboard >', '<div class="coming-soon-box"><i class="fa fa-tools"></i>This section is under development.</div>');
+            }
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────
+        function getInitials(name) {
+            return name.split(' ')
+                .filter(w => w !== 'Dr.' && w !== 'Prof.')
+                .slice(0, 2).map(w => w[0]).join('');
+        }
+
+        function tableHTML(headers, rows) {
+            const ths = headers.map(h => `<th>${h}</th>`).join('');
+            return `<table><thead><tr>${ths}</tr></thead><tbody>${rows}</tbody></table>`;
+        }
+
+        // ── Courses ───────────────────────────────────────────────────
+        function renderCourses(year, title, breadcrumb) {
+            const rows = courseData[year].map(c => `
+                <tr><td>${c.code}</td><td>${c.name}</td><td>${c.credits}</td><td>${c.faculty}</td></tr>
+            `).join('');
+            showSectionView(title, breadcrumb,
+                tableHTML(['Course Code', 'Course Name', 'Credits', 'Faculty'], rows));
+        }
+
+        // ── Exam Schedule ─────────────────────────────────────────────
+        function renderExamSchedule() {
+            const rows = courseData.examSchedule.map(e => `
+                <tr><td>${e.code}</td><td>${e.name}</td><td>${e.date}</td><td>${e.time}</td><td>${e.room}</td></tr>
+            `).join('');
+            showSectionView('Examination Schedule', 'Examination > Schedule',
+                tableHTML(['Course Code', 'Course Name', 'Date', 'Time', 'Room'], rows));
+        }
+
+        // ── Intra Bus ─────────────────────────────────────────────────
+        function renderIntraBus() {
+            const rows = courseData.intraBus.map(b => `
+                <tr><td>${b.route}</td><td>${b.bus}</td><td>${b.departure}</td><td>${b.arrival}</td><td>${b.seats}</td></tr>
+            `).join('');
+            showSectionView('Intra-Campus Bus Services', 'Intra Bus Services > Timings',
+                tableHTML(['Route', 'Bus Number', 'Departure', 'Arrival', 'Available Seats'], rows));
+        }
+
+        // ── Teachers ──────────────────────────────────────────────────
+        function showTeachers() {
+            const cards = teachers.map(t => `
+                <div class="teacher-card" onclick="showTimetable('${t.name}', '${t.subject}')">
+                    <div class="avatar">${getInitials(t.name)}</div>
+                    <div class="name">${t.name}</div>
+                    <div class="subject">${t.subject}</div>
+                    <div class="view-btn">View Timetable</div>
+                </div>
+            `).join('');
+            showSectionView('Teachers Timetable', 'Teachers Timetable >',
+                `<div class="teachers-grid">${cards}</div>`);
+        }
+
+        function showTimetable(name, subject) {
+            document.getElementById('sectionTitle').textContent = name + "'s Timetable";
+            document.getElementById('breadcrumb').textContent = 'Teachers Timetable > ' + name;
+            document.getElementById('contentArea').innerHTML = `
+                <span class="back-btn" onclick="showTeachers()">← Back to Teachers</span>
+                <div class="coming-soon-box">
+                    <i class="fa fa-clock"></i>
+                    <strong>${name}</strong><br/>
+                    <span style="color:#888; font-size:13px;">${subject}</span><br/><br/>
+                    Timetable coming soon!
+                </div>
+            `;
+        }
+    </script>
+
     <script src="app.js" defer></script>
 </body>
 
